@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Braintree Drop-in</title>
+    <script src="https://js.braintreegateway.com/web/dropin/1.40.2/js/dropin.min.js"></script>
+  </head>
+  <body>
+    <div id="dropin-container"></div>
+    <button id="submit-button">Pay</button>
+    <script>
+      // Get clientToken from query string
+      const urlParams = new URLSearchParams(window.location.search);
+      const clientToken = urlParams.get('token');
+
+      braintree.dropin.create({
+        authorization: clientToken,
+        container: '#dropin-container'
+      }, function (createErr, instance) {
+        document.getElementById('submit-button').addEventListener('click', function () {
+          instance.requestPaymentMethod(function (err, payload) {
+            if (payload && payload.nonce) {
+              // Send nonce back to React Native app
+              window.ReactNativeWebView.postMessage(payload.nonce);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
