@@ -8,7 +8,7 @@
   <style>
     :root {
       --main-bg: #181818;
-      --container-bg: #232c3b;
+      --container-bg: transparent; /* transparent for animated modal */
       --accent-yellow: #FFD600;
       --text-main: #FFD600;
       --text-white: #fff;
@@ -37,7 +37,7 @@
       overflow: hidden;
     }
     #payment-container {
-      background: var(--container-bg);
+      background: var(--container-bg); /* transparent */
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.25);
       padding: 16px 10px 10px 10px;
