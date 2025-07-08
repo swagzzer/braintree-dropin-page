@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Braintree Drop-in Payment</title>
-  <!-- Use the latest Drop-in version -->
   <script src="https://js.braintreegateway.com/web/dropin/1.40.2/js/dropin.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2em; }
@@ -31,8 +30,18 @@
       card: {
         cardholderName: {
           required: true
+        },
+        overrides: {
+          fields: {
+            number: {
+              maskInput: true
+            },
+            cvv: {
+              required: true,
+              placeholder: 'CVV'
+            }
+          }
         }
-        // CVV is shown by default for all cards that require it
       }
     }, function (createErr, instance) {
       if (createErr) {
