@@ -1,11 +1,57 @@
-braintree.dropin.create({
-  authorization: clientToken,
-  container: '#dropin-container',
-  card: {
-    cardholderName: {
-      required: true
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Braintree Drop-in Payment</title>
+  <script src="https://js.braintreegateway.com/web/dropin/1.40.2/js/dropin.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2em; }
+    #amount-display { font-size: 1.3em; font-weight: bold; margin-bottom: 1em; }
+    #dropin-container { margin-bottom: 1em; }
+    #submit-button { padding: 0.7em 2em; font-size: 1.1em; background: #FFD600; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="amount-display"></div>
+  <div id="dropin-container"></div>
+  <button id="submit-button">Pay</button>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
     }
-  }
-}, function (createErr, instance) {
-  // ...
-});
+    const amount = getQueryParam('amount');
+    const clientToken = getQueryParam('token');
+    document.getElementById('amount-display').innerText = amount ? `Amount: ${amount} RSD` : 'Amount: RSD';
+
+    braintree.dropin.create({
+      authorization: clientToken,
+      container: '#dropin-container',
+      card: {
+        cardholderName: {
+          required: true
+        }
+      }
+    }, function (createErr, instance) {
+      if (createErr) {
+        alert('Error loading payment form: ' + createErr.message);
+        return;
+      }
+      document.getElementById('submit-button').addEventListener('click', function () {
+        instance.requestPaymentMethod(function (err, payload) {
+          if (err) {
+            alert('Payment method error: ' + err.message);
+            return;
+          }
+          // Send the nonce back to React Native
+          if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+            window.ReactNativeWebView.postMessage(payload.nonce);
+          } else {
+            alert('WebView bridge not found.');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
