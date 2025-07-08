@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Braintree Drop-in Payment</title>
-  <script src="https://js.braintreegateway.com/web/dropin/1.33.6/js/dropin.min.js"></script>
+  <!-- Use the latest Drop-in version -->
+  <script src="https://js.braintreegateway.com/web/dropin/1.40.2/js/dropin.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2em; }
     #amount-display { font-size: 1.3em; font-weight: bold; margin-bottom: 1em; }
@@ -31,6 +32,7 @@
         cardholderName: {
           required: true
         }
+        // CVV is shown by default for all cards that require it
       }
     }, function (createErr, instance) {
       if (createErr) {
